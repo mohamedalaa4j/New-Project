@@ -2,7 +2,7 @@ package com.example.newproject.utiles
 
 import android.util.Log
 import com.example.newproject.R
-import com.example.newproject.data.model.GeneralErrorResponse
+import com.example.newproject.data.model.remote.GeneralErrorResponse
 import com.example.newproject.utiles.state.UiText
 import com.google.gson.Gson
 import com.example.newproject.utiles.state.ApiState
@@ -23,7 +23,7 @@ fun <T> toResultFlow(call: suspend () -> Response<T>): Flow<ApiState<T>> = flow 
         } else {
             val errorBody = response.errorBody()?.string()
             val errorObject = Gson().fromJson(errorBody, GeneralErrorResponse::class.java)
-            emit(ApiState.Error(UiText.DynamicString(errorObject.message)))
+            emit(ApiState.Error(UiText.DynamicString(errorObject.error.orEmpty())))
             Log.e("networkResponse", "Failure\n $errorBody")
         }
 
